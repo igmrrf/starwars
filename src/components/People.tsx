@@ -18,7 +18,7 @@ const People = () => {
       {status === 'error' && <div>Error fetching data</div>}
       {status === 'success' && (
         <div>
-          {data.results.map((person, index) => (
+          {data.results.map((person: any, index: number) => (
             <Person person={person} key={index} />
           ))}
         </div>

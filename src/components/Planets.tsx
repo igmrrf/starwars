@@ -2,43 +2,35 @@ import React, { useState } from 'react';
 import Planet from './Planet';
 import { useInfiniteQuery, useQuery } from 'react-query';
 
-const fetchPlanets = async (param) => {
-  console.log(param);
-
+const fetchPlanets = async (key: any) => {
+  console.log(key);
+  const param = key?.queryKey[2];
   const res = await fetch(`http://swapi.dev/api/planets/?page=${param}`);
   return res.json();
 };
 
 const Planets = () => {
   const [page, setPage] = useState(1);
-  // const { data, status } = useQuery(
-  //   ['planets', 'Hello, Onichan', page],
-  //   fetchPlanets,
-  //   {
-  //     staleTime: 2000,
-  //     cacheTime: 500000,
-  //   }
-  // );
-  const { data, status, fetchNextPage, fetchPreviousPage } = useInfiniteQuery(
-    'planets',
-    ({ pageParam = page }) => fetchPlanets(pageParam)
+  const { data, status } = useQuery(
+    ['planets', 'Hello, Onichan', page],
+    fetchPlanets,
+    {
+      staleTime: 2000,
+      cacheTime: 500000,
+    }
   );
-  console.log(useInfiniteQuery('planets', fetchPlanets));
-
-  const planets = data?.pages[0];
 
   return (
     <div>
       <h2>Planet</h2>
       <p>Page: {page}</p>
-      {status === 'success' && <p>Page Limit: {planets.count / 10}</p>}
+      {status === 'success' && <p>Page Limit: {data.count / 10}</p>}
       <button
         onClick={() => {
           setPage((prevPage) => Math.min(prevPage + 1, 6));
         }}
       >
         Next Page
-        
       </button>
       <button
         onClick={() => {
@@ -51,7 +43,7 @@ const Planets = () => {
       {status === 'error' && <div>Error fetching data</div>}
       {status === 'success' && (
         <div>
-          {planets.results.map((planet, index) => (
+          {data.results.map((planet: {}, index: number) => (
             <Planet planet={planet} key={index} />
           ))}
         </div>

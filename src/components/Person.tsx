@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Person = ({ person }) => {
+const Person = ({ person }: { person: any }) => {
   return (
     <div className="card">
       <h3>{person.name}</h3>
